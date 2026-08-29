@@ -147,6 +147,85 @@
       transition: opacity 0.5s ease;
     }
 
+    /* ── SELFIE SLIDE ── */
+    .selfie-stage {
+      position: relative; width: 100%; max-width: 380px; margin: 0 auto;
+      aspect-ratio: 3/4; border-radius: 18px; overflow: hidden;
+      background: #0B1120; border: 1px solid var(--border);
+      box-shadow: 0 0 30px var(--blue-pale);
+    }
+    #selfie-video, #selfie-canvas, #selfie-photo {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; transform: scaleX(-1); /* mirror like a real mirror */
+    }
+    #selfie-canvas { pointer-events: none; }
+    #selfie-photo { display: none; }
+    .selfie-frame-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: 14px;
+    }
+    .selfie-frame-overlay .frame-caption {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; color: var(--white);
+      background: linear-gradient(0deg, #000a, transparent);
+      width: 100%; text-align: center; padding: 30px 10px 6px;
+    }
+    .selfie-stickers {
+      position: absolute; inset: 0; pointer-events: none;
+      font-size: 1.6rem; opacity: .95;
+    }
+    .selfie-stickers span { position: absolute; filter: drop-shadow(0 0 6px #0008); }
+
+    .selfie-controls {
+      display: flex; justify-content: center; gap: 16px; margin-top: 22px;
+    }
+    .selfie-btn {
+      width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--card); color: var(--blue-l); font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center; cursor: none;
+      transition: transform .15s, border-color .2s, box-shadow .2s;
+    }
+    .selfie-btn:hover { transform: scale(1.08); border-color: var(--blue); box-shadow: 0 0 16px var(--blue-pale); }
+    .selfie-btn.shutter {
+      width: 68px; height: 68px; background: linear-gradient(135deg,var(--blue),var(--cyan));
+      color: #fff; font-size: 1.5rem; box-shadow: 0 4px 24px var(--blue-glow);
+    }
+
+    .frame-picker {
+      display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+    }
+    .frame-chip {
+      padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+      background: var(--card); color: var(--dim); font-family: 'Lato', sans-serif;
+      font-size: .72rem; letter-spacing: .1em; cursor: none; transition: all .2s;
+    }
+    .frame-chip:hover { border-color: var(--blue); color: var(--blue-l); }
+    .frame-chip.active { border-color: var(--cyan); color: var(--cyan); background: #56CCF215; box-shadow: 0 0 14px #56CCF220; }
+
+    .selfie-actions {
+      display: grid; gap: 12px; margin-top: 24px;
+    }
+    .selfie-actions .btn-main { margin-bottom: 0; }
+    .btn-ghost {
+      width: 100%; background: transparent; border: 1px solid var(--border);
+      color: var(--blue-l); border-radius: 10px; padding: 13px 24px;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.05rem;
+      letter-spacing: .05em; cursor: none; transition: border-color .2s, background .2s;
+    }
+    .btn-ghost:hover { border-color: var(--blue); background: var(--blue-pale); }
+
+    .selfie-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-size: .7rem;
+      letter-spacing: .05em; color: var(--dim); margin-top: 16px; line-height: 1.7;
+    }
+
+    .selfie-sent-badge {
+      display: none; text-align: center; margin-top: 14px;
+      font-family: 'Lato', sans-serif; font-size: .72rem; letter-spacing: .1em;
+      color: var(--cyan);
+    }
+
     /* ── WISHES SLIDE ── */
     .niha-intro { background:var(--card); border:1px solid var(--blue); border-radius:16px; padding:24px 28px; margin-bottom:32px; box-shadow:0 0 30px var(--blue-pale); font-style:italic; color:var(--dim); line-height:1.8; }
     .niha-intro strong { color:var(--blue-l); font-style:normal; }
@@ -256,6 +335,7 @@
   <div class="dot"></div>
   <div class="dot"></div>
   <div class="dot"></div>
+  <div class="dot"></div>
 </div>
 
 <canvas id="aurora-canvas"></canvas>
@@ -312,8 +392,58 @@
     </div>
   </section>
 
-  <!-- SLIDE 3: NIHA WISHES -->
+  <!-- SLIDE 3: SELFIE -->
   <section class="slide" id="slide-2">
+    <div class="slide-inner">
+      <p class="slabel">✦ &nbsp; Abadikan Momen</p>
+      <h2 class="stitle">Selfie dulu,<br>Niha! 📸</h2>
+      <div class="divider">— &nbsp; ✦ &nbsp; —</div>
+
+      <div class="niha-intro" style="margin-bottom:24px;">
+        <strong>Hai Niha 🌙</strong><br>
+        Ambil satu foto buat kenang-kenangan ulang tahun ke-19 ini. Bisa langsung disimpan ke HP-mu. Kalau kamu mau, foto ini juga bisa dikirim ke aku — tapi itu benar-benar pilihanmu, tombolnya terpisah dan jelas kok.
+      </div>
+
+      <div class="selfie-stage" id="selfie-stage">
+        <video id="selfie-video" autoplay playsinline muted></video>
+        <img id="selfie-photo" alt="Hasil selfie" />
+        <div class="selfie-frame-overlay" id="selfie-frame-overlay">
+          <div class="frame-caption" id="frame-caption">✦ Niha — 19 ✦</div>
+        </div>
+        <div class="selfie-stickers" id="selfie-stickers"></div>
+      </div>
+      <canvas id="selfie-canvas" style="display:none;"></canvas>
+
+      <div class="selfie-controls" id="selfie-controls-start">
+        <button class="selfie-btn" onclick="startCamera()" title="Nyalakan kamera">🎥</button>
+      </div>
+
+      <div class="selfie-controls" id="selfie-controls-live" style="display:none;">
+        <button class="selfie-btn" onclick="switchCamera()" title="Ganti kamera">🔄</button>
+        <button class="selfie-btn shutter" onclick="takeShot()" title="Ambil foto">📸</button>
+        <button class="selfie-btn" onclick="stopCamera()" title="Matikan kamera">✕</button>
+      </div>
+
+      <div class="frame-picker" id="frame-picker" style="display:none;">
+        <div class="frame-chip active" onclick="setFrame(this,'✦ Niha — 19 ✦','')">Simpel</div>
+        <div class="frame-chip" onclick="setFrame(this,'Happy 19th, Niha 🎂','🎈💙✨')">Party</div>
+        <div class="frame-chip" onclick="setFrame(this,'Grow beautifully 🌸','🌙🌸✨')">Aesthetic</div>
+        <div class="frame-chip" onclick="setFrame(this,'','🎉🎊🥳🎈')">Confetti</div>
+      </div>
+
+      <div class="selfie-actions" id="selfie-actions" style="display:none;">
+        <button class="btn-main" onclick="downloadSelfie()">Simpan ke HP ✦</button>
+        <button class="btn-ghost" onclick="sendSelfieToTelegram()">Kirim foto ini ke dia 💙</button>
+        <button class="btn-ghost" onclick="retakeSelfie()">Ambil ulang 🔄</button>
+      </div>
+
+      <div class="selfie-sent-badge" id="selfie-sent-badge">✓ Foto terkirim</div>
+      <p class="selfie-note">Kamera hanya aktif di perangkatmu sendiri. Tidak ada yang tersimpan atau terkirim kemanapun kecuali kamu menekan tombolnya sendiri.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: NIHA WISHES -->
+  <section class="slide" id="slide-3">
     <div class="slide-inner">
       <p class="slabel">✦ &nbsp; Tambahan aja sih </p>
       <h2 class="stitle">Apa harapanmu<br>di usia 19 ini?</h2>
@@ -372,8 +502,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 4: CLOSING -->
-  <section class="slide" id="slide-3">
+  <!-- SLIDE 5: CLOSING -->
+  <section class="slide" id="slide-4">
     <div class="slide-inner" id="closing">
       <span class="close-star">✦</span>
       <p class="close-quote">"You are not simply getting older; you are becoming a work of art that takes time to finish. On your special day, I hope you celebrate to the fullest, and may every dream of yours come true, because no one deserves the world’s joy more than you do."</p>
@@ -400,10 +530,11 @@ function showSlide(index) {
     else dot.classList.remove('active');
   });
   if(index === 1) initScratchCard(); // Init scratch pad when reaching slide 2
+  if(index !== 2) stopCamera(); // Auto stop camera when leaving selfie slide
 }
 
 window.addEventListener('click', (e) => {
-  const interactiveTarget = e.target.closest('button, textarea, input, a, .wish-option, .scratch-container, .floating-btn');
+  const interactiveTarget = e.target.closest('button, textarea, input, a, .wish-option, .scratch-container, .floating-btn, .selfie-stage, .frame-chip, .selfie-btn, .selfie-actions');
   if (interactiveTarget) return;
 
   const clickX = e.clientX;
@@ -754,6 +885,181 @@ function submitNiha(){
 }
 
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ══════════════════════════════════════════
+// SELFIE FEATURE
+// ══════════════════════════════════════════
+let selfieStream = null;
+let selfieFacingMode = 'user';
+let currentFrameCaption = '✦ Niha — 19 ✦';
+let currentFrameStickers = '';
+let selfieDataUrl = null;
+
+const selfieVideo   = document.getElementById('selfie-video');
+const selfiePhotoEl = document.getElementById('selfie-photo');
+const selfieCanvas  = document.getElementById('selfie-canvas');
+const frameCaptionEl= document.getElementById('frame-caption');
+const stickersEl    = document.getElementById('selfie-stickers');
+
+async function startCamera(){
+  try{
+    if(selfieStream) selfieStream.getTracks().forEach(t=>t.stop());
+    selfieStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: selfieFacingMode }, audio: false
+    });
+    selfieVideo.srcObject = selfieStream;
+    selfieVideo.style.display = 'block';
+    selfiePhotoEl.style.display = 'none';
+    document.getElementById('selfie-controls-start').style.display = 'none';
+    document.getElementById('selfie-controls-live').style.display = 'flex';
+    document.getElementById('frame-picker').style.display = 'flex';
+    document.getElementById('selfie-actions').style.display = 'none';
+    document.getElementById('selfie-sent-badge').style.display = 'none';
+  }catch(err){
+    showToast('Tidak bisa akses kamera — cek izin kamera di browser ya 🙏');
+  }
+}
+
+function switchCamera(){
+  selfieFacingMode = selfieFacingMode === 'user' ? 'environment' : 'user';
+  startCamera();
+}
+
+function stopCamera(){
+  if(selfieStream){
+    selfieStream.getTracks().forEach(t=>t.stop());
+    selfieStream = null;
+  }
+  document.getElementById('selfie-controls-start').style.display = 'flex';
+  document.getElementById('selfie-controls-live').style.display = 'none';
+}
+
+function setFrame(el, caption, stickers){
+  document.querySelectorAll('.frame-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentFrameCaption = caption;
+  currentFrameStickers = stickers;
+  frameCaptionEl.textContent = caption;
+  frameCaptionEl.style.display = caption ? 'block' : 'none';
+  renderStickers();
+}
+
+function renderStickers(){
+  stickersEl.innerHTML = '';
+  if(!currentFrameStickers) return;
+  const chars = [...currentFrameStickers];
+  const positions = [
+    {top:'6%',left:'8%'}, {top:'10%',right:'10%'}, {bottom:'22%',left:'6%'},
+    {bottom:'26%',right:'8%'}, {top:'40%',left:'4%'}, {top:'45%',right:'6%'}
+  ];
+  chars.forEach((ch,i)=>{
+    const span = document.createElement('span');
+    span.textContent = ch;
+    const pos = positions[i % positions.length];
+    Object.assign(span.style, pos);
+    stickersEl.appendChild(span);
+  });
+}
+
+function takeShot(){
+  if(!selfieStream) return;
+  const w = selfieVideo.videoWidth, h = selfieVideo.videoHeight;
+  selfieCanvas.width = w; selfieCanvas.height = h;
+  const ctx = selfieCanvas.getContext('2d');
+
+  // mirror draw (matches the mirrored video preview)
+  ctx.translate(w,0); ctx.scale(-1,1);
+  ctx.drawImage(selfieVideo, 0, 0, w, h);
+  ctx.setTransform(1,0,0,1,0,0);
+
+  // caption
+  if(currentFrameCaption){
+    const grad = ctx.createLinearGradient(0,h-h*0.22,0,h);
+    grad.addColorStop(0,'rgba(0,0,0,0)');
+    grad.addColorStop(1,'rgba(0,0,0,0.65)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, h-h*0.22, w, h*0.22);
+    ctx.fillStyle = '#E8F0FF';
+    ctx.font = `italic ${Math.floor(w*0.055)}px Georgia, serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(currentFrameCaption, w/2, h - h*0.07);
+  }
+
+  // stickers
+  if(currentFrameStickers){
+    const chars = [...currentFrameStickers];
+    const positions = [
+      {x:.10,y:.10},{x:.85,y:.14},{x:.08,y:.72},{x:.88,y:.76},{x:.06,y:.42},{x:.90,y:.46}
+    ];
+    ctx.font = `${Math.floor(w*0.09)}px sans-serif`;
+    ctx.textAlign = 'center';
+    chars.forEach((ch,i)=>{
+      const p = positions[i % positions.length];
+      ctx.fillText(ch, w*p.x, h*p.y);
+    });
+  }
+
+  selfieDataUrl = selfieCanvas.toDataURL('image/png');
+  selfiePhotoEl.src = selfieDataUrl;
+  selfiePhotoEl.style.display = 'block';
+  selfiePhotoEl.style.transform = 'none'; // already mirrored on canvas
+  selfieVideo.style.display = 'none';
+
+  document.getElementById('selfie-controls-live').style.display = 'none';
+  document.getElementById('frame-picker').style.display = 'none';
+  document.getElementById('selfie-actions').style.display = 'grid';
+  document.getElementById('selfie-sent-badge').style.display = 'none';
+
+  if(selfieStream){ selfieStream.getTracks().forEach(t=>t.stop()); selfieStream = null; }
+
+  launchConfetti(null,null,60);
+  showToast('📸 Foto diambil! Simpan atau kirim kalau kamu mau 💙');
+}
+
+function retakeSelfie(){
+  selfieDataUrl = null;
+  document.getElementById('selfie-actions').style.display = 'none';
+  document.getElementById('selfie-sent-badge').style.display = 'none';
+  startCamera();
+}
+
+function downloadSelfie(){
+  if(!selfieDataUrl) return;
+  const a = document.createElement('a');
+  a.href = selfieDataUrl;
+  a.download = `niha-19th-birthday-selfie.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('✅ Foto tersimpan ke perangkatmu');
+}
+
+// Sending is 100% opt-in: only fires if Niha explicitly taps this button.
+function sendSelfieToTelegram(){
+  if(!selfieDataUrl) return;
+
+  const botToken = '8743049888:AAGVsbEOkwdXjGtyYdfs58Cst8EfkeuiADE';
+  const chatId = '1307349774';
+
+  if(!confirm('Foto ini akan dikirim ke temanmu yang membuat halaman ini. Lanjutkan?')) return;
+
+  fetch(selfieDataUrl)
+    .then(res => res.blob())
+    .then(blob => {
+      const form = new FormData();
+      form.append('chat_id', chatId);
+      form.append('caption', '📸 Selfie ulang tahun ke-19 dari Niha!');
+      form.append('photo', blob, 'niha-selfie.png');
+      return fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method:'POST', body: form });
+    })
+    .then(()=>{
+      document.getElementById('selfie-sent-badge').style.display = 'block';
+      showToast('💙 Foto terkirim, terima kasih Niha!');
+    })
+    .catch(()=>{
+      showToast('Gagal mengirim, coba lagi ya 🙏');
+    });
+}
 
 </script>
 </body>

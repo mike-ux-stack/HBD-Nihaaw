@@ -321,7 +321,7 @@
 
       <div class="niha-intro">
         <strong>Hai Niha 🌙</strong><br>
-        Bagian tambahan yang mungkin bisa jadi refleksi diri sih, monggo di isi jujur wkwk.
+        Bagian tambahan yang mungkin bisa jadi refleksi diri sih, boleh diisi, boleh nggak 'kayaknya'.
       </div>
 
       <div class="wish-options">
@@ -491,7 +491,7 @@ function initScratchCard() {
     if (cleared > (canvas.width * canvas.height) * 0.45) {
       canvas.style.opacity = '0';
       setTimeout(() => canvas.remove(), 500);
-      showToast('✨ Pesan rahasia terbuka!');
+      showToast('✨');
     }
   }
 }
@@ -642,7 +642,7 @@ mbtn.addEventListener('click',(e)=>{
   mbtn.textContent=playing?'⏸':'♪';
   mbtn.style.background=playing?'var(--cyan)':'var(--blue)';
   playing?mbtn.classList.add('playing'):mbtn.classList.remove('playing');
-  showToast(playing?'🎵 Musik diputar — nikmati harimu, Niha':'🎵 Musik dijeda');
+  showToast(playing?'🎵 Musik diputar':'🎵 Musik dijeda');
 });
 
 // ══ CONFETTI & FIREWORKS ENGINE ══
